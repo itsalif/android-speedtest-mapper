@@ -43,9 +43,11 @@ import ca.liquidlabs.android.speedtestvisualizer.util.Tracer;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -163,7 +165,8 @@ public class MapperActivity extends Activity {
             }
         }
     }
-
+    
+    /** Sets up/Initializes the Map */
     private void setUpMap() {
         if (mCsvListData == null || mCsvListData.size() == 0) {
             // nothing to show on map - return with user msg
@@ -175,7 +178,20 @@ public class MapperActivity extends Activity {
         // contents and look of the
         // info window.
         mMap.setInfoWindowAdapter(new SpeedTestInfoWindowAdapter(getLayoutInflater()));
+        
+        /* ballon map tap listener */
+        mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			
+			@Override
+			public void onInfoWindowClick(Marker arg0) {
 
+				Toast.makeText(getBaseContext(), "Position: " + arg0.getPosition(), 
+							   Toast.LENGTH_SHORT).show();
+			}
+		});
+        
+        
+        
         // Add lots of markers to the map.
         addMarkersToMap();
 
