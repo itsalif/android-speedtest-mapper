@@ -26,6 +26,16 @@ import org.apache.commons.csv.CSVRecord;
  * @since SpeedTest v2.0.9
  */
 public class SpeedTestRecord {
+	
+	
+	/**
+     * A String representation of the Class Name - which might be used to 
+     * pass between activities 
+     */
+    public static final String KEY_NAME = SpeedTestRecord.class.getSimpleName();
+	
+    
+    
 
     //
     // Individual CSV keys index for each header elements
@@ -55,6 +65,9 @@ public class SpeedTestRecord {
     private String serverName;
     private String internalIp;
     private String externalIp;
+    
+    
+    
     
     //
     // Extra info added by this app
@@ -266,4 +279,26 @@ public class SpeedTestRecord {
     public void setMarkerColorHue(float markerColorHue) {
         this.markerColorHue = markerColorHue;
     }
+    
+    
+    /**
+     * Compares Two SpeedTestRecord and returns true if they 
+     * have the same lat, lon and date. Otherwise returns false
+     */
+    @Override
+    public boolean equals(Object other) 
+    {
+    	if (other == null || !(other instanceof SpeedTestRecord)) {
+    		return false;
+    	}
+    	
+    	SpeedTestRecord speedOther = (SpeedTestRecord) other;
+    	
+    	return (speedOther.lat == this.lat && speedOther.lon == this.lon 
+    			&& speedOther.date.equals(this.date)); 
+    	
+    	
+    }
+        
+    
 }

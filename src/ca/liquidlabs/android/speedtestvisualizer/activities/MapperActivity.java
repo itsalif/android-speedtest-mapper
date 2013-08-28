@@ -55,7 +55,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.NumberFormat;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapping of exported data.
@@ -64,11 +66,16 @@ import java.util.List;
  * @see https://developers.google.com/maps/documentation/android/
  * @see Maps V2 example project. Most codes are taken from sample project.
  */
-public class MapperActivity extends Activity {
+public class MapperActivity extends Activity 
+{
     private static final String LOG_TAG = MapperActivity.class.getSimpleName();
 
     private GoogleMap mMap;
     private static List<SpeedTestRecord> mCsvListData;
+    
+    /* A HashMap for mapping Markers of Images to SpeedTestRecordDatas */
+    private static Map<Marker, SpeedTestRecord> markerMap = new HashMap<Marker, SpeedTestRecord>();
+    
     private static int mMaxNetworkSpeed;
     private static int mMinNetworkSpeed;
 
@@ -179,14 +186,17 @@ public class MapperActivity extends Activity {
         // info window.
         mMap.setInfoWindowAdapter(new SpeedTestInfoWindowAdapter(getLayoutInflater()));
         
-        /* ballon map tap listener */
+        /* balloon map tap listener */
         mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			
 			@Override
-			public void onInfoWindowClick(Marker arg0) {
-
-				Toast.makeText(getBaseContext(), "Position: " + arg0.getPosition(), 
+			public void onInfoWindowClick(Marker arg0) 
+			{
+				
+				final SpeedTestRecord record = markerMap.get(arg0);				
+				Toast.makeText(getBaseContext(), "Record: " + record.toString(), 
 							   Toast.LENGTH_SHORT).show();
+								
 			}
 		});
         
@@ -230,12 +240,20 @@ public class MapperActivity extends Activity {
                             + SPEED_UNIT
             };
 
-            mMap.addMarker(new MarkerOptions()
+            
+            Marker addedMarker = mMap.addMarker(new MarkerOptions()
                     .position(speedTestRecord.getLatLng())
                     .title(speedTestRecord.getDate())
                     .snippet(StringUtils.join(snippetMultiInfo, AppConstants.TEXT_SEPARATOR))
                     .icon(BitmapDescriptorFactory.defaultMarker(speedTestRecord.getMarkerColorHue())));
 
+            /* 
+             * markerMap must have been initialized at this point
+             * -> Add the new Marker to a Map 
+             */
+            assert(markerMap != null);
+            markerMap.put(addedMarker, speedTestRecord);
+            
             // also build the maps bounds area
             mapBoundsBuilder.include(speedTestRecord.getLatLng());
 

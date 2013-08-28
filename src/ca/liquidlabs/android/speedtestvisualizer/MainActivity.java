@@ -42,6 +42,7 @@ import ca.liquidlabs.android.speedtestvisualizer.util.Tracer;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+
 /**
  * Main entry point launcher activity. Data is loaded here and verified before
  * loading maps view.
